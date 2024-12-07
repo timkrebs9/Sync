@@ -1,14 +1,18 @@
-from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+
+from pydantic import BaseModel
+
 
 class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
     completed: bool = False
 
+
 class TaskCreate(TaskBase):
     pass
+
 
 class Task(TaskBase):
     id: int
@@ -16,4 +20,4 @@ class Task(TaskBase):
     updated_at: Optional[datetime]
 
     class Config:
-        from_attributes = True 
+        from_attributes = True

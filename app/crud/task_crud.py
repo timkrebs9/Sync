@@ -17,14 +17,17 @@ def get_task(db: Session, task_id: int):
 
 def update_task(db: Session, task_id: int, task: TaskCreate):
     db_task = db.query(Task).filter(Task.id == task_id).first()
+    if db_task is None:
+        return None  # or raise HTTPException
     for key, value in task.model_dump().items():
         setattr(db_task, key, value)
     db.commit()
-    db.refresh(db_task)
     return db_task
 
 def delete_task(db: Session, task_id: int):
     db_task = db.query(Task).filter(Task.id == task_id).first()
+    if db_task is None:
+        return None  # or raise HTTPException
     db.delete(db_task)
     db.commit()
     return db_task 

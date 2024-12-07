@@ -1,3 +1,5 @@
+[![Build and deploy to Azure](https://github.com/timkrebs9/Sync/actions/workflows/main_sync-api.yml/badge.svg)](https://github.com/timkrebs9/Sync/actions/workflows/main_sync-api.yml)
+
 ### Project Struktur
 
 snyc/

@@ -8,10 +8,13 @@ from sqlalchemy.orm import sessionmaker
 from app.core.database import Base, get_db
 from app.main import app
 
-SQLALCHEMY_DATABASE_URL = (
-    SQLALCHEMY_DATABASE_URL
-) = f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('DATABASE_URL')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}?sslmode=require"
+# Check if we're running in CI environment
+IS_CI = os.getenv("CI", "false").lower() == "true"
 
+if IS_CI:
+    SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/snyc_test"
+else:
+    SQLALCHEMY_DATABASE_URL = f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('DATABASE_URL')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}?sslmode=require"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

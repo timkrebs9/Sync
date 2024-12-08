@@ -2,6 +2,8 @@
 
 [![CI/CD Pipeline](https://github.com/timkrebs9/Sync/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/timkrebs9/Sync/actions/workflows/ci-cd.yml)
 
+[![Development Integration Pipeline](https://github.com/timkrebs9/Sync/actions/workflows/dev-integration.yml/badge.svg?branch=dev)](https://github.com/timkrebs9/Sync/actions/workflows/dev-integration.yml)
+
 A FastAPI-based REST API for task management, designed to work with iOS applications. The API is containerized and deployed on Azure Cloud using modern CI/CD practices.
 
 ## 🚀 Features

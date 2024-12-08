@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.sql import func
 
 from app.core.database import Base
+from app.models.user_model import User
 
 __all__ = ["Priority", "RecurrenceType", "Tag", "Category", "Task"]
 
@@ -66,6 +67,8 @@ class Task(Base):
     next_occurrence: Mapped[datetime | None] = Column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = Column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime | None] = Column(DateTime(timezone=True), onupdate=func.now())
+    user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
 
     category: Mapped[Category | None] = relationship("Category", back_populates="tasks")
     tags: Mapped[List[Tag]] = relationship("Tag", secondary=task_tags, back_populates="tasks")
+    user: Mapped[User] = relationship("User", back_populates="tasks")

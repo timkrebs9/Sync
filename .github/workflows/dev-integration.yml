@@ -53,12 +53,12 @@ jobs:
           DATABASE_URL: postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOST }}:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}
           TESTING: "true"
         run: |
-          pytest tests/ -v
+          pytest tests/ -v --cov=app --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          file: ./coverage.xml
+          file: coverage.xml
           fail_ci_if_error: true
 
   build:

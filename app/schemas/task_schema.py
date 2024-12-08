@@ -47,9 +47,17 @@ class TaskBase(BaseModel):
     recurrence_interval: Optional[int] = None
 
 
-class TaskCreate(TaskBase):
+class TaskCreate(BaseModel):
+    title: str
+    description: str = ""
+    completed: bool = False
+    priority: Priority = Priority.MEDIUM
+    due_date: Optional[datetime] = None
+    reminder_date: Optional[datetime] = None
     category_id: Optional[int] = None
-    tag_ids: Optional[List[int]] = None
+    recurrence_type: Optional[RecurrenceType] = None
+    recurrence_interval: int = 0
+    tag_ids: List[int] = []
 
 
 class Task(TaskBase):

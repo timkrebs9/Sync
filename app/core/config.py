@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from cryptography.fernet import Fernet
 
 
 class Settings(BaseSettings):
@@ -16,6 +17,12 @@ class Settings(BaseSettings):
     postgres_db: str
     postgres_port: str
     ci: str
+    ENCRYPTION_KEY: str = Fernet.generate_key().decode()
+    REDIS_URL: str = "redis://localhost:6379"
+    STRIPE_SECRET_KEY: str
+    STRIPE_WEBHOOK_SECRET: str
+    STRIPE_PRICE_ID: str
+    FRONTEND_URL: str = "http://localhost:3000"
 
     class Config:
         env_file = ".env"

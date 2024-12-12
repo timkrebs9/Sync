@@ -50,6 +50,10 @@ class User(Base):
         DateTime(timezone=True), 
         onupdate=func.now()
     )
+    stripe_customer_id: Mapped[str] = Column(String, unique=True, nullable=True)
+    stripe_subscription_id: Mapped[str] = Column(String, unique=True, nullable=True)
+    subscription_end_date: Mapped[datetime] = Column(DateTime(timezone=True), nullable=True)
 
     preferences: Mapped[UserPreferences] = relationship("UserPreferences", back_populates="user", uselist=False)
-    tasks: Mapped[List["Task"]] = relationship("Task", back_populates="user") 
+    tasks: Mapped[List["Task"]] = relationship("Task", back_populates="user")
+    notes: Mapped[List["Note"]] = relationship("Note", back_populates="owner") 

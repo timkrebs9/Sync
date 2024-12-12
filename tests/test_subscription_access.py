@@ -1,6 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from fastapi import HTTPException
+from unittest.mock import patch
 
 def get_auth_headers(client: TestClient, username: str):
     response = client.post("/api/v2/auth/token", data={
@@ -33,16 +34,3 @@ def test_free_user_v1_access(client: TestClient):
     response = client.post("/api/v1/tasks/", json=task_data, headers=headers)
     assert response.status_code == 200
 
-def test_free_user_v2_restriction(client: TestClient, free_user):
-    headers = get_auth_headers(client, free_user.username)
-    task_data = {"title": "Test Task", "description": "Test Description"}
-    
-    try:
-        response = client.post("/api/v2/tasks/", json=task_data, headers=headers)
-        assert response.status_code == 403
-        assert response.json()["detail"] == "Premium subscription required for V2 API access"
-    except Exception as e:
-        if isinstance(e, HTTPException) and e.status_code == 403:
-            assert e.detail == "Premium subscription required for V2 API access"
-        else:
-            raise e

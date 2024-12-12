@@ -10,8 +10,12 @@ from app.main import app
 from app.models.user_model import User, SubscriptionTier, UserRole
 from app.core.security import get_password_hash, create_access_token
 
-# Set testing environment
+# Set testing environment variables
 os.environ["TESTING"] = "true"
+os.environ["STRIPE_SECRET_KEY"] = os.getenv("STRIPE_SECRET_KEY", "sk_test_dummy")
+os.environ["STRIPE_WEBHOOK_SECRET"] = os.getenv("STRIPE_WEBHOOK_SECRET", "whsec_dummy")
+os.environ["STRIPE_PRICE_ID"] = os.getenv("STRIPE_PRICE_ID", "price_dummy")
+
 # Check if we're running in CI environment
 IS_CI = os.getenv("CI", "false").lower() == "true"
 
@@ -55,7 +59,8 @@ def test_user(db_session):
         username="testuser",
         hashed_password=get_password_hash("testpass123"),
         role=UserRole.USER,
-        subscription=SubscriptionTier.FREE
+        subscription=SubscriptionTier.PREMIUM,
+        stripe_subscription_id="test_sub_id"
     )
     db_session.add(user)
     db_session.commit()
@@ -107,7 +112,7 @@ def free_user(db_session):
     user = User(
         email="free@example.com",
         username="freeuser",
-        hashed_password=get_password_hash("password"),
+        hashed_password=get_password_hash("testpass123"),
         role=UserRole.USER,
         subscription=SubscriptionTier.FREE
     )
@@ -115,3 +120,12 @@ def free_user(db_session):
     db_session.commit()
     db_session.refresh(user)
     return user
+
+@pytest.fixture
+def free_client(client, free_user):
+    token = create_access_token(data={"sub": free_user.username})
+    client.headers = {
+        **client.headers,
+        "Authorization": f"Bearer {token}"
+    }
+    return client

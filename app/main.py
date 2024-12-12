@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from app.core.middleware import SubscriptionMiddleware
 from app.core.security_middleware import RateLimitMiddleware
 from app.api.v1.endpoints import tasks
-from app.api.v2.endpoints import auth, tasks as tasks_v2
+from app.api.v2.endpoints import auth, tasks as tasks_v2, notes, subscription
 from app.core.database import engine
 from app.models import task_model, user_model
 
@@ -21,3 +21,5 @@ app.add_middleware(SubscriptionMiddleware)
 app.include_router(tasks.router, prefix="/api/v1/tasks", tags=["tasks-free"])
 app.include_router(auth.router, prefix="/api/v2/auth", tags=["authentication"])
 app.include_router(tasks_v2.router, prefix="/api/v2/tasks", tags=["tasks-premium"])
+app.include_router(notes.router, prefix="/api/v2/notes", tags=["notes"])
+app.include_router(subscription.router, prefix="/api/v2/subscription", tags=["subscription"])

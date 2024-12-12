@@ -86,6 +86,20 @@ jobs:
       with:
         app-name: 'sync-api'
         images: 'syncregistry.azurecr.io/${{ secrets.AZURE_REGISTRY_USERNAME }}/sync-api:${{ github.sha }}'
+        configuration-file: docker-compose.yml
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+        STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+        STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+        STRIPE_PRICE_ID: ${{ secrets.STRIPE_PRICE_ID }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+        REDIS_URL: ${{ secrets.REDIS_URL }}
+        FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
 
     - name: Azure logout
       run: |

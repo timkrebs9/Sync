@@ -16,8 +16,14 @@ async def create_checkout_session(
     current_user: User = Depends(get_current_user)
 ):
     try:
-        session_id = await stripe_service.create_checkout_session(current_user.id)
-        return {"session_id": session_id}
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Not authenticated")
+            
+        session = await stripe_service.create_checkout_session(current_user.id)
+        return {
+            "session_id": session.id,
+            "url": session.url
+        }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -26,19 +32,20 @@ async def cancel_subscription(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    if not current_user.stripe_subscription_id:
-        raise HTTPException(status_code=400, detail="No active subscription found")
-    
     try:
-        await stripe_service.cancel_subscription(current_user.stripe_subscription_id)
-        await user_crud.update_subscription_status(
-            db,
-            user_id=current_user.id,
-            subscription_tier=SubscriptionTier.FREE,
-            subscription_end_date=datetime.now()
-        )
-        return {"message": "Subscription cancelled successfully"}
-    except ValueError as e:
+        if not current_user.stripe_subscription_id:
+            raise HTTPException(status_code=400, detail="No active subscription found")
+        
+        subscription = await stripe_service.cancel_subscription(current_user.stripe_subscription_id)
+        if subscription:
+            await user_crud.update_subscription_status(
+                db,
+                user_id=current_user.id,
+                subscription_tier=SubscriptionTier.FREE,
+                subscription_end_date=datetime.now()
+            )
+            return {"message": "Subscription cancelled successfully"}
+    except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/success")

@@ -10,8 +10,12 @@ from app.main import app
 from app.models.user_model import User, SubscriptionTier, UserRole
 from app.core.security import get_password_hash, create_access_token
 
-# Set testing environment
+# Set testing environment variables
 os.environ["TESTING"] = "true"
+os.environ["STRIPE_SECRET_KEY"] = os.getenv("STRIPE_SECRET_KEY", "sk_test_dummy")
+os.environ["STRIPE_WEBHOOK_SECRET"] = os.getenv("STRIPE_WEBHOOK_SECRET", "whsec_dummy")
+os.environ["STRIPE_PRICE_ID"] = os.getenv("STRIPE_PRICE_ID", "price_dummy")
+
 # Check if we're running in CI environment
 IS_CI = os.getenv("CI", "false").lower() == "true"
 
